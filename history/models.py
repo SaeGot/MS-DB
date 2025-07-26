@@ -48,15 +48,23 @@ class PlayTypeAlias(models.Model):
 
 class Play(models.Model):
     play_name = models.CharField(max_length=50)
-    play_date = models.DateField(null=True)
     play_type = models.ForeignKey(PlayType, on_delete=models.SET_NULL, null=True)
-    play_summary = models.TextField(null=True)
+    play_description = models.TextField(null=True)
 
     class Meta:
         db_table = 'history_play'
 
     def __str__(self):
         return self.play_name
+
+
+class PlayDate(models.Model):
+    play = models.ForeignKey(Play, on_delete=models.CASCADE)
+    play_date = models.DateTimeField(null=True, blank=True)
+    play_location = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'history_play_date'
 
 
 class PlaySummary(models.Model):
