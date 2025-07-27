@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>멍석DB</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/search.css' %}">
+</head>
+<body>
+    <h5 style="text-align: right;">v0.1</h5>
+    <div class="search-form">
+        <form method="get" action="{% url 'history:search' %}">
+            <input type="text" name="q" value="{{ query }}" placeholder="이름이나 공연을 검색하세요" autocomplete="off">
+            <button type="submit">검색</button>
+        </form>
+    </div>
+
+    <hr>
+    {% if not selected_object %}
+        <h3>검색 결과</h3>
+
+        <h4>👤 회원</h4>
+        <div class="card-container">
+            {% for member in members %}
+                <a href="{% url 'history:member_detail' member.pk %}?q={{ query }}" class="card-link">
+                    <div class="card">
+                        {{ member.member_name }}{% if member.member_class %} ({{ member.member_class }}기){% endif %}
+                    </div>
+                </a>
+            {% empty %}
+                <p>회원 없음</p>
+            {% endfor %}
+        </div>
+
+        <h4>🎭 공연</h4>
+        <div class="card-container">
+            {% for play in plays %}
+                <a href="{% url 'history:play_detail' play.pk %}?q={{ query }}" class="card-link">
+                    <div class="card">
+                        {{ play.play_name }}
+                    </div>
+                </a>
+            {% empty %}
+                <p>공연 없음</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        {% if selected_type == "member" %}
+            <h1 style="text-align: center;">👤{{ selected_object.member_name }}</h1>
+
+            <h2>🎭 참여 공연</h2>
+            <ul>
+                {% for play_name, roles in participation_map.items %}
+                    <li>{{ play_name }} : {{ roles|join:", " }}</li>
+                {% empty %}
+                    <li>참여 기록이 없습니다.</li>
+                {% endfor %}
+            </ul>
+        {% elif selected_type == "play" %}
+            <h1 style="text-align: center;">🎭{{ selected_object.play_name }}</h1>
+
+            <h2>{{ selected_play_type.play_type_name }}</h2>
+            <h2>📅 공연일</h2>
+            <ul>
+                {% for play_date in selected_play_dates %}
+                    <li>{{ play_date.play_date|date:"Y년 m월 d일 H:i" }}</li>
+                {% empty %}
+                    <li>공연 날짜가 없습니다.</li>
+                {% endfor %}
+            </ul>
+            <h2>👤 참여자</h2>
+            <h3>🎬 연출진</h3>
+            <ul>
+                {% for roles, member_name in director_map.items %}
+                    <li>{{ roles }} : {{ member_name|join:", " }}</li>
+                {% empty %}
+                    <li>참여자가 없습니다.</li>
+                {% endfor %}
+            </ul>
+            <h3>👥 배우</h3>
+            <ul>
+                {% for member_name, roles in actor_map.items %}
+                    <li>{{ member_name }} : {{ roles|join:", " }}</li>
+                {% empty %}
+                    <li>참여자가 없습니다.</li>
+                {% endfor %}
+            </ul>
+            <h3>🛠️🧰👗 스탭</h3>
+            <ul>
+                {% for roles, member_name in staff_map.items %}
+                    <li>{{ roles }} : {{ member_name|join:", " }}</li>
+                {% empty %}
+                    <li>참여자가 없습니다.</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <a href="{% url 'history:search' %}?q={{ query }}">← 검색 결과로 돌아가기</a>
+    {% endif %}
+</body>
+</html>

@@ -48,7 +48,7 @@ class PlayTypeAlias(models.Model):
 
 class Play(models.Model):
     play_name = models.CharField(max_length=50)
-    play_type = models.ForeignKey(PlayType, on_delete=models.SET_NULL, null=True)
+    play_type = models.ForeignKey(PlayTypeAlias, on_delete=models.SET_NULL, null=True)
     play_description = models.TextField(null=True)
 
     class Meta:
