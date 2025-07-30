@@ -8,7 +8,8 @@ def search_view(request, pk=None):
     members = []
     plays = []
     participations = []
-    participation_map = {}
+    participation_actor = {}
+    participation_staff = {}
     director_map = {}
     actor_map = {}
     staff_map = {}
@@ -40,17 +41,18 @@ def search_view(request, pk=None):
                     role_text = f"{p.staff_role.staff_role_name}"
                 else:
                     role_text = "스탭"
+                if play_name not in participation_staff:
+                    participation_staff[play_name] = []
+                participation_staff[play_name].append(role_text)
+
             else:
                 if p.play_character:
                     role_text = f"배우({p.play_character.play_character_name})"
                 else:
                     role_text = "배우"
-
-            if play_name not in participation_map:
-                participation_map[play_name] = []
-
-            participation_map[play_name].append(role_text)
-
+                if play_name not in participation_actor:
+                    participation_actor[play_name] = []
+                participation_actor[play_name].append(role_text)
 
     elif pk and 'play' in request.path:
         selected_type = 'play'
@@ -95,10 +97,19 @@ def search_view(request, pk=None):
         'plays': plays,
         'selected_object': selected_object,
         'selected_type': selected_type,
-        'participation_map': participation_map,
+        'participation_actor': participation_actor,
+        'participation_staff': participation_staff,
         'selected_play_type': selected_play_type,
         'selected_play_dates': selected_play_dates,
         'director_map': director_map,
         'actor_map': actor_map,
         'staff_map': staff_map,
     })
+
+
+def version(request):
+    versions = [
+        {"version": "v0.2", "date": "2025-07-27", "desc": "최초 공개"},
+        {"version": "v0.1", "date": "2025-07-30", "desc": "공연 연도 추가, 회원 상세 : 배우, 스탭 구분"},
+    ]
+    return render(request, 'version.html', {"versions": versions})

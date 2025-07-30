@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="{% static 'css/search.css' %}">
 </head>
 <body>
-    <h5 style="text-align: right;">v0.1</h5>
+    <h5 style="text-align: right;">
+        <a href="{% url 'history:version' %}" target="_blank" style="text-decoration: none;">v0.2 공연 연도 추가</a>
+    </h5>
     <div class="search-form">
         <form method="get" action="{% url 'history:search' %}">
             <input type="text" name="q" value="{{ query }}" placeholder="이름이나 공연을 검색하세요" autocomplete="off">
@@ -49,8 +51,19 @@
             <h1 style="text-align: center;">👤{{ selected_object.member_name }}</h1>
 
             <h2>🎭 참여 공연</h2>
+            <h3>👥 배우</h3>
             <ul>
-                {% for play_name, roles in participation_map.items %}
+                {% if selected_type == "member" %}
+                    {% for play_name, roles in participation_actor.items %}
+                        <li>{{ play_name }} : {{ roles|join:", " }}</li>
+                    {% empty %}
+                        <li>참여 기록이 없습니다.</li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+            <h3>🛠️🧰👗 스탭</h3>
+            <ul>
+                {% for play_name, roles in participation_staff.items %}
                     <li>{{ play_name }} : {{ roles|join:", " }}</li>
                 {% empty %}
                     <li>참여 기록이 없습니다.</li>
