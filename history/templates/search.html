@@ -37,7 +37,7 @@
             {% for play in plays %}
                 <a href="{% url 'history:play_detail' play.pk %}?q={{ query }}" class="card-link">
                     <div class="card">
-                        {{ play.play_name }}
+                        {{ play.play_name }} ( {{ play.play_date }} )
                     </div>
                 </a>
             {% empty %}

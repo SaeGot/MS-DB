@@ -20,15 +20,19 @@ def search_view(request, pk=None):
     if query:
         members = Member.objects.filter(member_name__icontains=query)
         plays = Play.objects.filter(play_name__icontains=query)
+        for play in plays:
+            searched_play_date = PlayDate.objects.filter(play=play).order_by('play_date')[0]
+            play.play_date = searched_play_date.play_date.year
 
     if pk and 'member' in request.path:
         selected_type = 'member'
         selected_object = get_object_or_404(Member, pk=pk)
         participations = Participation.objects.filter(member=selected_object).select_related('play', 'play_character',
-                                                                                             'staff_role')
+                                                                                                'staff_role')
 
         for p in participations:
-            play_name = p.play.play_name
+            play_date = PlayDate.objects.filter(play=p.play).order_by('play_date')[0]
+            play_name = f"{p.play.play_name} ({play_date.play_date.year})"
             role_text = ""
 
             if p.is_staff:
