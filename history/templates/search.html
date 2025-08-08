@@ -55,7 +55,7 @@
             <ul>
                 {% if selected_type == "member" %}
                     {% for play_name, roles in participation_actor.items %}
-                        <li>{{ play_name }} : {{ roles|join:", " }}</li>
+                        <li><b>{{ play_name }}</b> : {{ roles|join:", " }}</li>
                     {% empty %}
                         <li>참여 기록이 없습니다.</li>
                     {% endfor %}
@@ -64,7 +64,7 @@
             <h3>🛠️🧰👗 스탭</h3>
             <ul>
                 {% for play_name, roles in participation_staff.items %}
-                    <li>{{ play_name }} : {{ roles|join:", " }}</li>
+                    <li><b>{{ play_name }}</b> : {{ roles|join:", " }}</li>
                 {% empty %}
                     <li>참여 기록이 없습니다.</li>
                 {% endfor %}
@@ -72,7 +72,7 @@
         {% elif selected_type == "play" %}
             <h1 style="text-align: center;">🎭{{ selected_object.play_name }}</h1>
 
-            <h2>{{ selected_play_type.play_type_name }}</h2>
+            <h2>{{ selected_play_type.keyword }}</h2>
             <h2>📅 공연일</h2>
             <ul>
                 {% for play_date in selected_play_dates %}
@@ -85,7 +85,7 @@
             <h3>🎬 연출진</h3>
             <ul>
                 {% for roles, member_name in director_map.items %}
-                    <li>{{ roles }} : {{ member_name|join:", " }}</li>
+                    <li><b>{{ roles }}</b> : {{ member_name|join:", " }}</li>
                 {% empty %}
                     <li>참여자가 없습니다.</li>
                 {% endfor %}
@@ -93,7 +93,7 @@
             <h3>👥 배우</h3>
             <ul>
                 {% for member_name, roles in actor_map.items %}
-                    <li>{{ member_name }} : {{ roles|join:", " }}</li>
+                    <li><b>{{ member_name }}</b> : {{ roles|join:", " }}</li>
                 {% empty %}
                     <li>참여자가 없습니다.</li>
                 {% endfor %}
@@ -101,7 +101,7 @@
             <h3>🛠️🧰👗 스탭</h3>
             <ul>
                 {% for roles, member_name in staff_map.items %}
-                    <li>{{ roles }} : {{ member_name|join:", " }}</li>
+                    <li><b>{{ roles }}</b> : {{ member_name|join:", " }}</li>
                 {% empty %}
                     <li>참여자가 없습니다.</li>
                 {% endfor %}

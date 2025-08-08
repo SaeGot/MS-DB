@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from history.models import Member, Play, PlayDate, PlayType, Participation
+from history.models import Member, Play, PlayDate, PlayTypeAlias, Participation
 
 
 def search_view(request, pk=None):
@@ -38,18 +38,18 @@ def search_view(request, pk=None):
 
             if p.is_staff:
                 if p.staff_role:
-                    role_text = f"{p.staff_role.staff_role_name}"
+                    role_text = p.staff_role.staff_role_name
                 else:
-                    role_text = "스탭"
+                    role_text = "-"
                 if play_name not in participation_staff:
                     participation_staff[play_name] = []
                 participation_staff[play_name].append(role_text)
 
             else:
                 if p.play_character:
-                    role_text = f"배우({p.play_character.play_character_name})"
+                    role_text = p.play_character.play_character_name
                 else:
-                    role_text = "배우"
+                    role_text = "-"
                 if play_name not in participation_actor:
                     participation_actor[play_name] = []
                 participation_actor[play_name].append(role_text)
@@ -57,7 +57,7 @@ def search_view(request, pk=None):
     elif pk and 'play' in request.path:
         selected_type = 'play'
         selected_object = get_object_or_404(Play, pk=pk)
-        selected_play_type = get_object_or_404(PlayType, pk=selected_object.play_type_id)
+        selected_play_type = get_object_or_404(PlayTypeAlias, pk=selected_object.play_type_id)
         selected_play_dates = PlayDate.objects.filter(play=selected_object).order_by('play_date')
         participations = Participation.objects.filter(play=selected_object).select_related('member', 'play_character',
                                                                                              'staff_role')
@@ -109,7 +109,8 @@ def search_view(request, pk=None):
 
 def version(request):
     versions = [
-        {"version": "v0.2", "date": "2025-07-27", "desc": "최초 공개"},
-        {"version": "v0.1", "date": "2025-07-30", "desc": "공연 연도 추가, 회원 상세 : 배우, 스탭 구분"},
+        {"version": "v0.3", "date": "2025-08-02", "desc": "공연 종류 버그 수정, 가독성 증가"},
+        {"version": "v0.2", "date": "2025-07-30", "desc": "공연 연도 추가, 회원 상세 : 배우, 스탭 구분"},
+        {"version": "v0.1", "date": "2025-07-27", "desc": "최초 공개"},
     ]
     return render(request, 'version.html', {"versions": versions})
